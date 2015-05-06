@@ -33,12 +33,9 @@ for link in links:
 		soup2 = BeautifulSoup(html2)
 		block = soup2.find('ul', {'class':'item-list item-list__rich'})
 		sublink = block.find('a', href=True)
-		print sublink
-		
 		filePageUrl = sublink['href']
 		title = sublink.encode_contents(formatter='html').replace('&nbsp;',' ') #  gets rid of erroneous &nbsp; chars
 		title = title.upper().strip()
-		
 		html3 = urllib2.urlopen(filePageUrl)
 		soup3 = BeautifulSoup(html3)
 		
