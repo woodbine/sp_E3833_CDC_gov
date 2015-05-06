@@ -44,7 +44,6 @@ for link in links:
 		filelinks = block.findAll('a', href=True)
 		
 		for filelink in filelinks:
-			print filelink
 	  		# create the right strings for the new filename
 	  		fileurl = filelink['href']
 	  		if 'Download' in filelink.text:
