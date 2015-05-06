@@ -43,9 +43,10 @@ for link in links:
 		filelinks = block.findAll('a', href=True)
 		
 		for filelink in filelinks:
+			print filelink
 	  		# create the right strings for the new filename
 	  		fileurl = filelink['href']
-	  		if '.csv' in fileurl:
+	  		if 'Download' in filelink.text:
 		  		print fileurl
 		  		csvYr = title.split(' ')[-1]
 		  		csvMth = title.split(' ')[-2][:3]
