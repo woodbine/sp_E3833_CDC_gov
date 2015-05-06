@@ -46,6 +46,8 @@ for link in links:
 		for filelink in filelinks:
 	  		# create the right strings for the new filename
 	  		fileurl = filelink['href']
+	  		print fileurl
+	  		
 	  		csvYr = title.split(' ')[-1]
 	  		csvMth = title.split(' ')[-2][:3]
 	  		csvMth = convert_mth_strings(csvMth);
