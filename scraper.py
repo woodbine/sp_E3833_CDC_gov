@@ -32,28 +32,29 @@ for link in links:
 		html2 = urllib2.urlopen(suburl)
 		soup2 = BeautifulSoup(html2)
 		block = soup2.find('ul', {'class':'item-list item-list__rich'})
-		sublink = block.find('a', href=True)
-		filePageUrl = sublink['href']
+		sublinks = block.findAll('a', href=True)
 		
-		title = sublink.encode_contents(formatter='html').replace('&nbsp;',' ') #  gets rid of erroneous &nbsp; chars
-		title = title.upper().strip()
-		html3 = urllib2.urlopen(filePageUrl)
-		soup3 = BeautifulSoup(html3)
-		
-		block = soup3.find('main',{'class':'main-content'})
-		filelinks = block.findAll('a', href=True)
-		
-		for filelink in filelinks:
-	  		# create the right strings for the new filename
-	  		fileurl = filelink['href']
-	  		if 'Download' in filelink.text:
-		  		print filelink.text
-		  		print fileurl
-		  		csvYr = title.split(' ')[-1]
-		  		csvMth = title.split(' ')[-2][:3]
-		  		csvMth = convert_mth_strings(csvMth);
-		  		filename = entity_id + "_" + csvYr + "_" + csvMth
-		  		todays_date = str(datetime.now())
-		  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
-		  		print filename
+		for sublink in sublinks:
+			filePageUrl = sublink['href']
+			title = sublink.encode_contents(formatter='html').replace('&nbsp;',' ') #  gets rid of erroneous &nbsp; chars
+			title = title.upper().strip()
+			html3 = urllib2.urlopen(filePageUrl)
+			soup3 = BeautifulSoup(html3)
+			
+			block = soup3.find('main',{'class':'main-content'})
+			filelinks = block.findAll('a', href=True)
+			
+			for filelink in filelinks:
+		  		# create the right strings for the new filename
+		  		fileurl = filelink['href']
+		  		if 'Download' in filelink.text:
+			  		print filelink.text
+			  		print fileurl
+			  		csvYr = title.split(' ')[-1]
+			  		csvMth = title.split(' ')[-2][:3]
+			  		csvMth = convert_mth_strings(csvMth);
+			  		filename = entity_id + "_" + csvYr + "_" + csvMth
+			  		todays_date = str(datetime.now())
+			  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
+			  		print filename
 
