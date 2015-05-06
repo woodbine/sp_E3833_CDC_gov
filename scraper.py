@@ -48,13 +48,13 @@ for link in links:
 		for filelink in filelinks:
 	  		# create the right strings for the new filename
 	  		fileurl = filelink['href']
-	  		print fileurl
-	  		
-	  		csvYr = title.split(' ')[-1]
-	  		csvMth = title.split(' ')[-2][:3]
-	  		csvMth = convert_mth_strings(csvMth);
-	  		filename = entity_id + "_" + csvYr + "_" + csvMth
-	  		todays_date = str(datetime.now())
-	  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
-	  		print filename
+	  		if '.csv' in fileurl:
+		  		print fileurl
+		  		csvYr = title.split(' ')[-1]
+		  		csvMth = title.split(' ')[-2][:3]
+		  		csvMth = convert_mth_strings(csvMth);
+		  		filename = entity_id + "_" + csvYr + "_" + csvMth
+		  		todays_date = str(datetime.now())
+		  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
+		  		print filename
 
