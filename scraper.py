@@ -47,6 +47,7 @@ for link in links:
 	  		# create the right strings for the new filename
 	  		fileurl = filelink['href']
 	  		if 'Download' in filelink.text:
+		  		print filelink.text
 		  		print fileurl
 		  		csvYr = title.split(' ')[-1]
 		  		csvMth = title.split(' ')[-2][:3]
