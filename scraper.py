@@ -35,7 +35,7 @@ for link in links:
 		sublink = block.find('a', href=True)
 		filePageUrl = sublink['href']
 		title = link.encode_contents(formatter='html').replace('&nbsp;',' ') #  gets rid of erroneous &nbsp; chars
-	  title = title.upper().strip()
+		title = title.upper().strip()
 		
 		html3 = urllib2.urlopen(filePageUrl)
 		soup3 = BeautifulSoup(html3)
@@ -44,13 +44,13 @@ for link in links:
 		filelinks = block.findAll('a', href=True)
 		
 		for filelink in filelinks:
-  		# create the right strings for the new filename
-  		fileurl = filelink['href']
-  		csvYr = title.split(' ')[-1]
-  		csvMth = title.split(' ')[-2][:3]
-  		csvMth = convert_mth_strings(csvMth);
-  		filename = entity_id + "_" + csvYr + "_" + csvMth
-  		todays_date = str(datetime.now())
-  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
-  		print filename
+	  		# create the right strings for the new filename
+	  		fileurl = filelink['href']
+	  		csvYr = title.split(' ')[-1]
+	  		csvMth = title.split(' ')[-2][:3]
+	  		csvMth = convert_mth_strings(csvMth);
+	  		filename = entity_id + "_" + csvYr + "_" + csvMth
+	  		todays_date = str(datetime.now())
+	  		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileurl, "f": filename, "d": todays_date })
+	  		print filename
 
