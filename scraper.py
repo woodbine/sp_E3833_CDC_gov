@@ -40,7 +40,7 @@ for link in links:
 		html3 = urllib2.urlopen(filePageUrl)
 		soup3 = BeautifulSoup(html3)
 		
-		block = soup3.find('ul',{'class':'item-list'})
+		block = soup3.find('main',{'class':'main-content'})
 		filelinks = block.findAll('a', href=True)
 		
 		for filelink in filelinks:
