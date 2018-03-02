@@ -96,11 +96,14 @@ soup = BeautifulSoup(html, 'lxml')
 
 #### SCRAPE DATA
 
-block = soup.find('div',{'class':'editor'})
-links = block.findAll('a', href=True)
+block = soup.find('div',{'id':'content'})
+links = block.findAll('a', text=re.compile('View Reports'))
 
 for link in links:
-    suburl = 'http://www.worcestershire.gov.uk' + link['href']
+    if 'http' not in link['href']:
+        suburl = 'http://www.worcestershire.gov.uk' + link['href']
+    else:
+        suburl = link['href']
     if 'payments_to_commercial_suppliers_over' in suburl:
         html2 = urllib2.urlopen(suburl)
         soup2 = BeautifulSoup(html2, 'lxml')
