@@ -122,6 +122,9 @@ for link in links:
                 if 'Download' in filelink.text:
                     csvYr = title.split(' ')[-1]
                     csvMth = title.split(' ')[-2][:3]
+                    if ' - ' not in title:
+                        csvYr = title.split()[1]
+                        csvMth = title.split()[0][:3]
                     csvMth = convert_mth_strings(csvMth)
                     data.append([csvYr, csvMth, fileurl])
 
