@@ -100,11 +100,11 @@ soup = BeautifulSoup(html, "lxml")
 
 links = soup.find_all('a')
 for link in links:
-    file_name = link.text()
-    if 'Spending' in file_name:
+    file_name = link.text
+    if 'Spending' in file_name and '.csv' in link['href']:
         url = link['href']
         csvYr = file_name.replace('Spending ', '').strip()[-4:]
-        csvMth = file_name.replace('Spending ', '').strip()[-4:][:3]
+        csvMth = file_name.replace('Spending ', '').strip()[:3]
         csvMth = convert_mth_strings(csvMth.upper())
         data.append([csvYr, csvMth, url])
 
