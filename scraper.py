@@ -51,7 +51,7 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.getcode() == 200
-        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx', '.pdf']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
@@ -85,8 +85,8 @@ def convert_mth_strings ( mth_string ):
 
 #### VARIABLES 1.0
 
-entity_id = "E2632_BDC_gov"
-url = "https://www.broadland.gov.uk/info/200197/spending_and_transparency/339/council_spending_over_250"
+entity_id = "E3833_CDC_gov"
+url = "http://www.chichester.gov.uk/paymentsover500pounds"
 errors = 0
 data = []
 
@@ -98,27 +98,70 @@ soup = BeautifulSoup(html, 'lxml')
 
 #### SCRAPE DATA
 
-links = soup.find('div', 'editor').find_all('a', href=True)
-for link in links:
-    if 'http' not in link['href']:
-        year_url = 'https://www.broadland.gov.uk' + link['href']
+year_links = soup.find('ul', attrs = {'class': 'list-unstyled tasks-top'}).find_all('a')
+for year_link in year_links:
+    if 'http' not in year_link['href']:
+        year_url = 'http://www.chichester.gov.uk'+year_link['href']
     else:
-        year_url = link['href']
+        year_url = year_link['href']
     year_html = urllib2.urlopen(year_url)
     year_soup = BeautifulSoup(year_html, 'lxml')
-    blocks = year_soup.find_all('span', 'download-listing__file-tag download-listing__file-tag--type')
+    blocks = year_soup.find('ul', 'list-group').find_all('a')
     for block in blocks:
-        if 'CSV' in block.text:
-            url = block.find_next('a')['href']
-            if 'http' not in url:
-                url = 'https://www.broadland.gov.uk' + url
+        url = block['href']
+        if 'http' not in url:
+            url = 'http://www.chichester.gov.uk'+url
+        else:
+            url = url
+        file_name = block.text
+        if ('csv' in file_name or 'excel' in file_name) and '2010' not in year_url:
+            if ('October' in file_name and 'December' in file_name) or ('Oct' in file_name and 'Dec' in file_name):
+                csvMth = 'Q4'
+                match = re.search(r'.*([1-3][0-9]{3})', file_name)
+                if match is not None:
+                    csvYr = match.group(1)
+            elif ('July' in file_name and 'September' in file_name) or ('July' in file_name and 'Sept' in file_name) or ('Jul' in file_name and 'Sep' in file_name):
+                csvMth = 'Q3'
+                match = re.search(r'.*([1-3][0-9]{3})', file_name)
+                if match is not None:
+                    csvYr = match.group(1)
+            elif ('April' in file_name and 'June' in file_name) or ('Apr' in file_name and 'Jun' in file_name):
+                csvMth = 'Q2'
+                match = re.search(r'.*([1-3][0-9]{3})', file_name)
+                if match is not None:
+                    csvYr = match.group(1)
+            elif 'January' in file_name and 'March' in file_name:
+                csvMth = 'Q1'
+                match = re.search(r'.*([1-3][0-9]{3})', file_name)
+                if match is not None:
+                    csvYr = match.group(1)
+            elif 'Full Year' in file_name:
+                csvMth = 'Y1'
+                match = re.search(r'.*([1-3][0-9]{3})', file_name)
+                if match is not None:
+                    csvYr = match.group(1)
             else:
-                url = url
-            file_name = block.find_next('a')['aria-label']
-            csvMth = file_name.split()[-2][:3]
-            csvYr = file_name.split()[-1]
+                csvMth = file_name[:3]
+                csvYr = file_name.split()[1]
             csvMth = convert_mth_strings(csvMth.upper())
             data.append([csvYr, csvMth, url])
+
+    if '2010' in year_url:
+        blocks = year_soup.find('ul', 'list-group').find_all('li')[1:]
+        for block in blocks:
+            pdf_link = block.find('a')['class'][-1]
+            if 'pdf' in pdf_link:
+                csv_file_name = block.find_next('li').find('a')
+                try:
+                    url = block.find_next('li').find('a')['href']
+                except:
+                    break
+                if csv_file_name:
+                    csv_file_name = csv_file_name.text
+                    csvMth = csv_file_name[:3]
+                    csvYr = csv_file_name.split()[1]
+                    csvMth = convert_mth_strings(csvMth.upper())
+                    data.append([csvYr, csvMth, url])
 
 
 #### STORE DATA 1.0
