@@ -106,7 +106,10 @@ for year_link in year_links:
         year_url = year_link['href']
     year_html = urllib2.urlopen(year_url)
     year_soup = BeautifulSoup(year_html, 'lxml')
-    blocks = year_soup.find('ul', 'list-group').find_all('a')
+    try:
+        blocks = year_soup.find('ul', 'list-group').find_all('a')
+    except:
+        blocks = year_soup.find('ul', 'list-unstyled itemcount2').find_all('a')
     for block in blocks:
         url = block['href']
         if 'http' not in url:
